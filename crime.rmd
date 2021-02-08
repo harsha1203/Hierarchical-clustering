@@ -1,0 +1,56 @@
+---
+title: "Clustering - Crime dataset"
+author: "harsha"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(readr)
+crime_data <- read_csv("D:/Modules/Module 12/crime_data.csv")
+View(crime_data)
+
+str(crime_data)
+
+normalized_data<-scale(crime_data[,2:5]) #excluding the university name columnbefore normalizing
+View(normalized_data)
+
+
+d <- dist(normalized_data, method = "euclidean") # distance matrix
+d
+# Model Building
+fit <- hclust(d, method="complete")
+View(fit)
+fit$labels
+fit$dist.method
+
+```{r pressure, echo=FALSE}
+
+plot(fit) # display dendrogram
+plot(fit, hang=-1)
+groups <- cutree(fit, k=5) # cut tree into 5 clusters
+class(groups)
+?cutree
+rect.hclust(fit, k=5, border="red")
+?rect.hclust
+
+membership<-as.matrix(groups)
+table(membership)
+
+final <- data.frame(crime_data, membership)
+#final <- cbind(mydata, membership)
+View(final)
+##final1 <- final[,c(ncol(final),1:(ncol(final)-1))]
+install.packages("data.table")
+library(data.table)
+setcolorder(final,c("membership"))
+View(final)
+
+```
+  
+
+
+```
+
